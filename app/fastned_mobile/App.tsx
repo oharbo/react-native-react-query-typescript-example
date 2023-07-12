@@ -6,28 +6,38 @@ import {
   DefaultTheme,
   DarkTheme,
 } from '@react-navigation/native';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
+import {
+  ScreenNames,
+  ScreenTitleName,
+} from './src/constants/screenNamesConstants';
 import VehicleListScreen from './src/screens/VehicleListScreen';
-import {screenNames} from './src/constants/screenNames';
+import VehicleDetailScreen from './src/screens/VehicleDetailScreen';
 
 const Stack = createNativeStackNavigator();
+export const queryClient = new QueryClient();
 
-function App(): React.ReactElement | null {
+function App(): React.ReactElement {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
-      <Stack.Navigator>
-        <Stack.Screen
-          name={screenNames.vehicleListScreen}
-          component={VehicleListScreen}
-        />
-        <Stack.Screen
-          name={screenNames.vehicleDetailScreen}
-          component={VehicleListScreen}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
+        <Stack.Navigator>
+          <Stack.Screen
+            name={ScreenNames.vehicleListScreen}
+            component={VehicleListScreen}
+            options={{title: ScreenTitleName.vehicleListScreen}}
+          />
+          <Stack.Screen
+            name={ScreenNames.vehicleDetailScreen}
+            component={VehicleDetailScreen}
+            options={{title: ScreenTitleName.vehicleDetailScreen}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
 

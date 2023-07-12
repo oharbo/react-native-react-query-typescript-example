@@ -1,228 +1,140 @@
-// import {
-//   type RouteProp,
-//   useNavigation,
-//   useRoute,
-// } from '@react-navigation/native';
-// import {type StackNavigationProp} from '@react-navigation/stack';
-// import {testId} from '../common/testIds';
-import {spacing} from '../common/spacing';
-import {text} from '../common/typography';
-import {PageComponent} from '../components/PageComponent';
+import React, {useCallback, type ReactElement} from 'react';
+import {
+  FlatList,
+  Image,
+  ImageSourcePropType,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
+import axios from 'axios';
+import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
+import {type StackNavigationProp} from '@react-navigation/stack';
+import {Theme, useNavigation, useTheme} from '@react-navigation/native';
+import {useQuery} from '@tanstack/react-query';
 
-import {backgrounds, primary} from '../common/colors';
-// import fonts from 'assets/fonts';
-// import {Button} from 'components/Button/Button';
-// import {Card} from 'components/Card/Card';
-// import Icons from 'constants/Icons';
-// import {container} from 'constants/Layout';
-// import {ScreenName} from 'navigation/ScreenName';
-// import {type LoginStackParamList} from 'navigation/stacks/LoginStack';
-// import React, {type FC, Fragment} from 'react';
-// import {ScrollView, StyleSheet, Text, View} from 'react-native';
-// import Image from 'react-native-remote-svg';
-import React, {type FC, Fragment} from 'react';
-import { StyleProp, StyleSheet, useColorScheme, View, ViewStyle } from 'react-native';
 import BaseText from '../components/primitives/BaseText';
+import {ICONS_SRC} from '../constants/assetsConstants';
+import {PageComponent} from '../components/PageComponent';
+import {primary} from '../common/colors';
+import {text} from '../common/typography';
+import {
+  RootStackParamList,
+  ScreenNames,
+} from '../constants/screenNamesConstants';
+import {VehicleItem} from '../shared/lib/types';
+import {vehiclesBaseUrl} from '../constants/apiConstants';
 
-// export interface React.ComponentClass<P,S> extends StaticLifecycle
+const VehicleListScreen = ({}) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const {colors}: Theme = useTheme();
+  const tintColor: string = colors.text;
 
-type MyProps = {
-  // using `interface` is also ok
-  // message: string;
-};
-type MyState = {
-  // count: number; // like this
-};
-class VehicleListScreen extends React.Component<MyProps, MyState> {
-  constructor(props: MyProps) {
-    super(props);
+  function fetchVehiclesList(): Promise<UseQueryOptions> {
+    return axios.get(`${vehiclesBaseUrl}vehicles`).then(res => res.data);
   }
 
-  componentDidMount(): void {
+  const {isLoading, error, data}: UseQueryResult<Array<VehicleItem>> = useQuery(
+    {
+      queryKey: ['vehicles'],
+      queryFn: fetchVehiclesList,
+    },
+  );
 
-  }
+  const onItemPress = useCallback(
+    (item: VehicleItem) => {
+      navigation.navigate(ScreenNames.vehicleDetailScreen, {item});
+    },
+    [navigation],
+  );
+  // room for improvement: adding more detailed comparison from item memoization
+  const renderItem = useCallback(
+    ({item}: {item: VehicleItem}): ReactElement => {
+      const imageSrc: ImageSourcePropType = ICONS_SRC[item.category];
+      const tColor: {tintColor: string} = {tintColor};
 
-  render(): React.JSX.Element {
-    console.log('asasasas');
+      return (
+        <Pressable
+          style={styles.itemContainer}
+          key={`vehicle-${item.id}`}
+          onPress={() => {
+            onItemPress(item);
+          }}>
+          <Image source={imageSrc} style={[styles.image, tColor]} />
+          <View>
+            <BaseText style={styles.brandLabel} text={`Brand: ${item.brand}`} />
+            <BaseText style={styles.modelLabel} text={`Model: ${item.model}`} />
+            <BaseText
+              style={styles.modelLabel}
+              text={`Version: ${item.version}`}
+            />
+          </View>
+        </Pressable>
+      );
+    },
+    [onItemPress, tintColor],
+  );
+
+  const keyExtractor = (i: VehicleItem): string => {
+    return `vehicle-${i?.id || Math.random()}-row`;
+  };
+
+  if (isLoading) {
     return (
-      <PageComponent useSafeAreaView>
-        <BaseText text={'123'} />
+      <PageComponent useSafeAreaView edges={['bottom']}>
+        <BaseText style={styles.label} text={'Loading...'} />
       </PageComponent>
     );
   }
-}
+
+  if (error) {
+    return (
+      <PageComponent useSafeAreaView edges={['bottom']}>
+        <BaseText style={styles.label} text={'Error getting vehicle fleet'} />
+      </PageComponent>
+    );
+  }
+
+  const refreshing: boolean = !!(data && isLoading);
+
+  return (
+    <PageComponent useSafeAreaView edges={['bottom']} style={styles.container}>
+      <FlatList
+        data={data}
+        keyExtractor={keyExtractor}
+        refreshControl={<RefreshControl refreshing={refreshing} />}
+        refreshing={refreshing}
+        renderItem={renderItem}
+      />
+    </PageComponent>
+  );
+};
+
+const styles = StyleSheet.create({
+  brandLabel: {
+    fontWeight: '500',
+    fontSize: text.t7,
+  },
+  modelLabel: {
+    fontSize: text.t5,
+  },
+  container: {
+    flex: 1,
+    width: '100%',
+    marginHorizontal: 4,
+  },
+  image: {marginRight: 12},
+  itemContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: primary.grey,
+  },
+  label: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+});
 export default VehicleListScreen;
-
-//import type {PropsWithChildren} from 'react';
-// type SectionProps = PropsWithChildren<{
-//   title: string;
-// }>;
-
-// <ScrollView
-//   contentContainerStyle={styles.contentContainer}
-//   bounces={false}>
-//   <View style={styles.TopHeader}>
-//     <Image style={styles.welcomeLogo} source={Icons.appLogo} />
-//
-//     <Text style={styles.tagLine}>Making minds happier</Text>
-//   </View>
-// </ScrollView>
-
-//FlatList
-// data={deviceList}
-// numColumns={2}
-// ListEmptyComponent={
-//   <View style={styles.view}>
-//     <Text>No devices found</Text>
-//   </View>
-// }
-// renderItem={({ item, index }) => (
-//     <Item position={index + 1} device={item} navigation={navigation}
-//           indexedItems={deviceState == 'CONNECTED' ? "Indexing progress : " + indexedItems +"%" : null}
-//           indexerState={deviceState == 'CONNECTED'  ? indexerState : null}
-//     />
-// )
-// }
-// keyExtractor={(item, index) => `${item.name}${item.pseudoSerial}`}
-//>
-
-// const LoginScreen: FC = () => {
-//   const navigation = useNavigation<StackNavigationProp<LoginStackParamList>>();
-//   const route = useRoute<RouteProp<LoginStackParamList, ScreenName.Login>>();
-//   const {error} = route.params || '';
-//
-//   const navigateToSignUp = (): void => {
-//     navigation.navigate(ScreenName.SignUp);
-//   };
-//
-//   const navigateToLogin = (): void => {
-//     navigation.navigate(ScreenName.SignIn);
-//   };
-//
-//   return (
-//     <PageComponent useSafeAreaView>
-//       <ScrollView
-//         contentContainerStyle={styles.contentContainer}
-//         bounces={false}>
-//         <View style={styles.TopHeader}>
-//           <Image style={styles.welcomeLogo} source={Icons.appLogo} />
-//
-//           <Text style={styles.tagLine}>Making minds happier</Text>
-//
-//           <View>
-//             {error === 'incorrectCourse' ? (
-//               <Fragment>
-//                 <Image
-//                   style={styles.staff}
-//                   source={require('../../assets/images/landing/staff.png')}
-//                 />
-//
-//                 <Card style={styles.card}>
-//                   <Text style={styles.text}>
-//                     Sorry but the uprise mobile app is currently undergoing
-//                     system upgrades, please visit http://app.uprise.co in your
-//                     browser to access the web app.
-//                   </Text>
-//
-//                   <Text style={styles.text}>🚀</Text>
-//                 </Card>
-//               </Fragment>
-//             ) : (
-//               <Image
-//                 style={styles.staff}
-//                 source={require('../../assets/images/landing/staff.png')}
-//               />
-//             )}
-//           </View>
-//         </View>
-//
-//         <View style={styles.getStartedContainer}>
-//           <Text style={styles.btnText}>New User?</Text>
-//
-//           <Button
-//             testID={testId.LOGIN_SIGN_UP_BUTTON}
-//             onPress={navigateToSignUp}
-//             style={styles.signUp}
-//             variant="primary"
-//             size="full-width"
-//             title="Sign up"
-//             a11yLabel="Sign up"
-//           />
-//
-//           <Text style={styles.btnText}>Already have an account?</Text>
-//
-//           <Button
-//             testID={testId.LOGIN_SIGN_IN_BUTTON}
-//             onPress={navigateToLogin}
-//             variant="secondary"
-//             size="full-width"
-//             title="Sign in"
-//             a11yLabel="Sign in"
-//           />
-//         </View>
-//       </ScrollView>
-//     </PageComponent>
-//   );
-// };
-// const styles = StyleSheet.create({
-//   contentContainer: {
-//     // ...container,
-//     padding: 0,
-//     backgroundColor: backgrounds.white,
-//     justifyContent: 'space-between',
-//   },
-//   TopHeader: {
-//     marginTop: 60,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   card: {
-//     padding: spacing.s5,
-//     borderRadius: 10,
-//     backgroundColor: '#FFFFFF',
-//     justifyContent: 'center',
-//     alignContent: 'center',
-//     marginBottom: spacing.s5,
-//   },
-//
-//   welcomeLogo: {
-//     width: 165,
-//     height: 24,
-//     marginBottom: 12,
-//     marginRight: 0,
-//   },
-//   signUp: {
-//     marginBottom: spacing.s4,
-//   },
-//   signIn: {
-//     marginBottom: 0,
-//   },
-//   btnText: {
-//     marginBottom: 5,
-//     fontFamily: fonts.regular,
-//     color: primary.purple,
-//     fontSize: text.t5,
-//   },
-//   getStartedContainer: {
-//     width: '100%',
-//     justifyContent: 'flex-end',
-//     padding: spacing.s6,
-//     paddingBottom: 0,
-//     paddingTop: 0,
-//     marginTop: 45,
-//     marginBottom: 24,
-//   },
-//   helpNow: {marginBottom: spacing.s10},
-//   HelpNowWrap: {},
-//   imageBackground: {
-//     width: '100%',
-//     height: 400,
-//   },
-//   staff: {
-//     // width: 256,
-//     // height: 327,
-//     alignSelf: 'center',
-//     marginBottom: 10,
-//   },
-//   text: {textAlign: 'center'},
-// });

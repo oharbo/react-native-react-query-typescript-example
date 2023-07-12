@@ -1,16 +1,10 @@
 import React, {FC} from 'react';
-import {
-  StyleProp,
-  StyleSheet,
-  useColorScheme,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 import {
   NativeSafeAreaViewProps,
   SafeAreaView,
 } from 'react-native-safe-area-context';
-import {useTheme} from '@react-navigation/native';
+import {Theme, useTheme} from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   flx1: {flex: 1},
@@ -29,10 +23,7 @@ export const PageComponent: FC<PageComponentInterface> = ({
   style = [],
   useSafeAreaView,
 }) => {
-  const isDarkMode: boolean = useColorScheme() === 'dark';
-  const {colors} = useTheme();
-  console.log('PageComponent isDarkMode', isDarkMode);
-  console.log('PageComponent colors:', colors);
+  const {colors}: Theme = useTheme();
 
   const bg: {backgroundColor: string} = {backgroundColor: colors?.card};
 
@@ -47,5 +38,5 @@ export const PageComponent: FC<PageComponentInterface> = ({
     );
   }
 
-  return <View style={[styles.flx1, style]}>{children}</View>;
+  return <View style={[styles.flx1, bg, style]}>{children}</View>;
 };

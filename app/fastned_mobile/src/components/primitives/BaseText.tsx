@@ -1,6 +1,6 @@
 import React, {FC, memo} from 'react';
 import {StyleProp, Text, TextProps, TextStyle} from 'react-native';
-import {useTheme} from '@react-navigation/native';
+import {Theme, useTheme} from '@react-navigation/native';
 
 import {text as fontSize} from '../../common/typography';
 interface BaseTextProps extends TextProps {
@@ -20,9 +20,8 @@ const BaseText: FC<BaseTextProps> = ({
   text = '',
   truncate = false,
 }: BaseTextProps) => {
-  const {colors} = useTheme();
+  const {colors}: Theme = useTheme();
 
-  console.log('BaseText colors:', colors);
   const fWeight: '500' | '400' = isBold ? '500' : '400';
   const styles: StyleProp<TextStyle> = [
     {color: colors?.text, fontSize: fontSize.t7, fontWeight: fWeight},
