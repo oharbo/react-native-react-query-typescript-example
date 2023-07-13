@@ -16,7 +16,13 @@ import VehicleListScreen from './src/screens/VehicleListScreen';
 import VehicleDetailScreen from './src/screens/VehicleDetailScreen';
 
 const Stack = createNativeStackNavigator();
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 180 * 1000, // 3 mins
+    },
+  },
+});
 
 function App(): React.ReactElement {
   const isDarkMode = useColorScheme() === 'dark';

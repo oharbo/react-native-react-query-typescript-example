@@ -2,6 +2,17 @@
 
 This  [**React Native**](https://reactnative.dev) project is bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+Few words to the fellow engineers:
+Please treat this project as an attempt to choose a best architecture and strategy for the given requirements.
+
+Along with implementing of FAST-1, FAST-2 and OPTIONAL(search, tests) I would like to highlight a following details:
+
+- there is no implementation for authentication|login|ToS|privacy|localisation
+- local search|filtering is implemented for vehicle "Brand", treat it as a basic implementation of happy path, basic UX
+- dark mode support using default color schemes
+- I realise that project structure is not perfect, my intention was to make it easy to explore and readability
+
+
 ## Step 1: Start the Metro Server
 
 First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
@@ -59,7 +70,12 @@ The following endpoints are available to use:
 
 >**Note**: you might need to replace "localhost" with your machine IP address to reach the endpoints
 
-## Step 4: Maestro tests
+## Step 4: Debugging
+
+>**Note**: you might need to replace take additional steps inorder to enable debug w/ Hermes enabled. Please refer to the [official documentation](https://reactnative.dev/docs/hermes#debugging-js-on-hermes-using-google-chromes-devtools)
+
+
+## Step 5: Maestro tests
 
 This project is covered with Maestro integration test. Maestro supports testing React Native screens and apps on both Android and iOS.
 
