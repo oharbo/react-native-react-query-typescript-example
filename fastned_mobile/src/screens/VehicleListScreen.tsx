@@ -31,7 +31,6 @@ const VehicleListScreen = ({}) => {
   const {colors}: Theme = useTheme();
   const tintColor: string = colors.text;
 
-  // @ts-ignore
   function fetchVehiclesList(): Promise<UseQueryOptions> {
     return axios.get(`${vehiclesBaseUrl}vehicles`).then(res => res.data);
   }
@@ -59,6 +58,7 @@ const VehicleListScreen = ({}) => {
         <Pressable
           style={styles.itemContainer}
           key={`vehicle-${item.id}`}
+          testID={`vehicle-${item.id}`}
           onPress={() => {
             onItemPress(item);
           }}>

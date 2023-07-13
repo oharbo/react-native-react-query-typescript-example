@@ -59,3 +59,29 @@ The following endpoints are available to use:
 
 >**Note**: you might need to replace "localhost" with your machine IP address to reach the endpoints
 
+## Step 4: Maestro tests
+
+This project is covered with Maestro integration test. Maestro supports testing React Native screens and apps on both Android and iOS.
+
+### Installing|Upgrading the Maestro CLI
+Run the following command to install Maestro on Mac OS, Linux or Windows (WSL):
+```
+curl -Ls "https://get.maestro.mobile.dev" | bash
+```
+
+### Connecting to Your Device
+Before running Flows on iOS Simulator, install Facebook IDB tool
+```
+brew tap facebook/fb
+brew install facebook/fb/idb-companion
+```
+>**Note**: Note: At the moment, Maestro does not support real iOS devices
+
+Test suites are located in flow.yaml in the project root.
+
+### Start the app and test using Maestro
+* Run npm start in the react native app source directory
+* Select either Android or iOS Simulator
+* In another terminal, run ```maestro test flow.yaml```
+* When the Expo app launches, select the app that you’re testing
+* Now you can watch how the tests are running

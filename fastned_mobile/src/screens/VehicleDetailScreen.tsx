@@ -94,7 +94,7 @@ const VehicleDetailScreen = ({}) => {
                     openURL(data.helpUrl);
                   }
                 }}
-                testID={'testID'}>
+                testID={'help-page-url'}>
                 <BaseText style={styles.link} text={'Open Help Page'} />
                 <Image source={ICONS_SRC.OPEN_URL} style={styles.icon} />
               </Pressable>

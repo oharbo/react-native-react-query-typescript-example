@@ -1,0 +1,11 @@
+appId: org.reactjs.native.example.fastned-mobile
+---
+- launchApp
+- tapOn:
+    id: "vehicle-201"
+- tapOn:
+    text: "Fleet"
+- tapOn:
+    id: "vehicle-79"
+- tapOn:
+    id: "help-page-url"
