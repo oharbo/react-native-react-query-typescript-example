@@ -28,7 +28,7 @@ const getItemLayout = (
   return {length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index};
 };
 const keyExtractor = (i: VehicleItem): string => {
-  return `vehicle-${i?.id || Math.random()}-row`;
+  return `vehicle-${i?.id}-row`;
 };
 
 /** FUNCTIONALITY for FETCHING VEHICLE DATA LIST  **/
@@ -50,12 +50,13 @@ const VehicleListScreen = ({}) => {
     ArrayLike<VehicleItem>
   >([]);
 
+  // TODO need to check the signature and remove ts-ignore
   // @ts-ignore
   const {isLoading, error, data}: UseQueryResult<Array<VehicleItem>> =
     useVehicleList();
 
   // TODO: improve filtering functionality, add filtering w/ item.model
-  // also, I would like to hightlight that UX for the local search is very basic
+  // also, I would like to highlight that UX for the local search is very basic
   // as the implementation was optional I didn't want to spend too much time on it
   const searchFilterFunction = (searchStr: string): void => {
     // Check if searched text is not blank
@@ -76,6 +77,7 @@ const VehicleListScreen = ({}) => {
       setFilteredDataSource(newData);
       setSearch(searchStr);
     } else if (searchStr && searchStr.trim().length < 2) {
+      // we don't want to filter by 1 symbol, but we want to store that search string
       setSearch(searchStr);
     } else {
       // Inserted text is blank
@@ -99,7 +101,7 @@ const VehicleListScreen = ({}) => {
           placeholderTextColor={colors.text}
           returnKeyType={'search'}
           testID={'local-search-textinput'}
-          onChangeText={str => searchFilterFunction(str)}
+          onChangeText={searchFilterFunction}
           keyboardAppearance={'default'}
           style={[styles.input, {color: colors.text}]}
           value={search}

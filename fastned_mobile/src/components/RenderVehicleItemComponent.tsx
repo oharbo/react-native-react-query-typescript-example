@@ -33,7 +33,6 @@ const RenderVehicleItem = ({item}: {item: VehicleItem}): ReactElement => {
     },
     [navigation],
   );
-  console.log('render item');
 
   return (
     <Pressable
