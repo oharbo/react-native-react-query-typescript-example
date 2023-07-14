@@ -3,6 +3,7 @@
 This  [**React Native**](https://reactnative.dev) project is bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 Few words to the fellow engineers:
+
 Please treat this project as an attempt to choose a best architecture and strategy for the given requirements.
 
 Along with implementing of FAST-1, FAST-2 and OPTIONAL(search, tests) I would like to highlight a following details:
