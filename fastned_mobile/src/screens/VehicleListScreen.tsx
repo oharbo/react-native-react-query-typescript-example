@@ -12,13 +12,13 @@ import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
 import {useQuery} from '@tanstack/react-query';
 
 import BaseText from '../components/primitives/BaseText';
+import RenderVehicleItem from '../components/RenderVehicleItemComponent';
+import {ITEM_HEIGHT} from '../constants/stylesConstants';
 import {PageComponent} from '../components/PageComponent';
+import {VehicleItem} from '../shared/lib/types';
 import {primary} from '../common/colors';
 import {text} from '../common/typography';
-import {VehicleItem} from '../shared/lib/types';
 import {vehiclesBaseUrl} from '../constants/apiConstants';
-import {ITEM_HEIGHT} from '../constants/stylesConstants';
-import RenderVehicleItem from '../components/RenderVehicleItemComponent';
 
 /** FLATLIST HELPERS **/
 const getItemLayout = (
@@ -132,12 +132,12 @@ const VehicleListScreen = ({}) => {
     );
   }
 
-  const refreshing: boolean = !!(data && isLoading);
+  const refreshing: boolean = Boolean(data && isLoading);
   const dataToEnlist: ArrayLike<VehicleItem> | undefined =
     filteredDataSource && filteredDataSource.length ? filteredDataSource : data;
   return (
     <PageComponent useSafeAreaView edges={['bottom']} style={styles.container}>
-      {data && renderSearchBar()}
+      {Boolean(data) && renderSearchBar()}
       <FlatList
         data={dataToEnlist}
         getItemLayout={getItemLayout}

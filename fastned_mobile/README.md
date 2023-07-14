@@ -13,6 +13,21 @@ Along with implementing of FAST-1, FAST-2 and OPTIONAL(search, tests) I would li
 - dark mode support using default color schemes
 - I realise that project structure is not perfect, my intention was to make it easy to explore and readability
 
+## Step 0: Prepare the project
+
+Before your will run the app you would need to install npm modules and iOS pods
+
+```
+yarn
+```
+```
+cd ios/ && pod install && cd ../
+```
+
+>**Note**: if you are building app on M1/M2 chip it might be needed to run `pod install` with `arch -x86_64`:
+```
+cd ios/ && arch -x86_64 pod install && cd ../
+```
 
 ## Step 1: Start the Metro Server
 

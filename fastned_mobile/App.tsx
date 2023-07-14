@@ -14,12 +14,13 @@ import {
 } from './src/constants/screenNamesConstants';
 import VehicleListScreen from './src/screens/VehicleListScreen';
 import VehicleDetailScreen from './src/screens/VehicleDetailScreen';
+import {STALE_TIME} from './src/constants/apiConstants';
 
 const Stack = createNativeStackNavigator();
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 180 * 1000, // 3 mins
+      staleTime: STALE_TIME,
     },
   },
 });
