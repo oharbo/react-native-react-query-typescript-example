@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import {Theme, useTheme} from '@react-navigation/native';
-import {UseQueryOptions, UseQueryResult} from '@tanstack/react-query/src/types';
 import {useQuery} from '@tanstack/react-query';
 
 import BaseText from '../components/primitives/BaseText';
@@ -34,26 +33,17 @@ const keyExtractor = (i: VehicleItem): string => {
 /** FUNCTIONALITY for FETCHING VEHICLE DATA LIST  **/
 // I suppose these functions are meant to be placed in separate directory, but I decided
 // to leave those here for easier readability of the code
-function fetchVehiclesList(): Promise<UseQueryOptions> {
+function fetchVehiclesList(): Promise<Array<VehicleItem>> {
   return axios.get(`${vehiclesBaseUrl}vehicles`).then(res => res.data);
 }
-const useVehicleList = () =>
-  useQuery({
-    queryKey: ['vehicles'],
-    queryFn: fetchVehiclesList,
-  });
+const useVehicleList = () => useQuery(['vehicles'], fetchVehiclesList);
 
 const VehicleListScreen = ({}) => {
   const {colors}: Theme = useTheme();
   const [search, setSearch] = useState<string>('');
-  const [filteredDataSource, setFilteredDataSource] = useState<
-    ArrayLike<VehicleItem>
-  >([]);
+  const [filteredDataSource, setFilteredDataSource] = useState<any>([]);
 
-  // TODO need to check the signature and remove ts-ignore
-  // @ts-ignore
-  const {isLoading, error, data}: UseQueryResult<Array<VehicleItem>> =
-    useVehicleList();
+  const {isLoading, error, data} = useVehicleList();
 
   // TODO: improve filtering functionality, add filtering w/ item.model
   // also, I would like to highlight that UX for the local search is very basic
@@ -73,7 +63,6 @@ const VehicleListScreen = ({}) => {
         return itemData.indexOf(textData) > -1;
       });
       // had to use couple "ts-ignore" for the sake of time, apologies for that
-      // @ts-ignore
       setFilteredDataSource(newData);
       setSearch(searchStr);
     } else if (searchStr && searchStr.trim().length < 2) {
