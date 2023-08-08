@@ -1,19 +1,27 @@
-import React, {FC} from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
+import React, {FC, ReactNode} from 'react';
+import {StyleSheet, View, ViewStyle} from 'react-native';
 import {
-  NativeSafeAreaViewProps,
+  Edges,
   SafeAreaView,
+  SafeAreaViewProps,
 } from 'react-native-safe-area-context';
 import {Theme, useTheme} from '@react-navigation/native';
 
-const styles = StyleSheet.create({
+type Styles = {
+  flx1: ViewStyle;
+};
+
+const styles = StyleSheet.create<Styles | any>({
   flx1: {flex: 1},
 });
 
-interface PageComponentInterface extends NativeSafeAreaViewProps {
-  safeAreaStyles?: StyleProp<ViewStyle>;
-  useSafeAreaView?: boolean;
+interface PageComponentInterface extends SafeAreaViewProps {
+  children: ReactNode;
+  edges: Edges;
+  safeAreaStyles?: ViewStyle;
+  style: ViewStyle;
   useModalBackground?: boolean;
+  useSafeAreaView?: boolean;
 }
 
 export const PageComponent: FC<PageComponentInterface> = ({
@@ -21,7 +29,7 @@ export const PageComponent: FC<PageComponentInterface> = ({
   edges = ['top', 'bottom', 'left', 'right'],
   safeAreaStyles = [],
   style = [],
-  useSafeAreaView,
+  useSafeAreaView = true,
 }) => {
   const {colors}: Theme = useTheme();
 
