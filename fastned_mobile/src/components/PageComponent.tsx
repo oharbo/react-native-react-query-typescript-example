@@ -11,7 +11,7 @@ type Styles = {
   flx1: ViewStyle;
 };
 
-const styles = StyleSheet.create<Styles | any>({
+const styles: Styles = StyleSheet.create<Styles>({
   flx1: {flex: 1},
 });
 
@@ -19,7 +19,7 @@ interface PageComponentInterface extends SafeAreaViewProps {
   children: ReactNode;
   edges: Edges;
   safeAreaStyles?: ViewStyle;
-  style: ViewStyle;
+  style?: ViewStyle;
   useModalBackground?: boolean;
   useSafeAreaView?: boolean;
 }
@@ -27,13 +27,13 @@ interface PageComponentInterface extends SafeAreaViewProps {
 export const PageComponent: FC<PageComponentInterface> = ({
   children,
   edges = ['top', 'bottom', 'left', 'right'],
-  safeAreaStyles = [],
-  style = [],
+  safeAreaStyles,
+  style,
   useSafeAreaView = true,
-}) => {
+}: PageComponentInterface) => {
   const {colors}: Theme = useTheme();
 
-  const bg: {backgroundColor: string} = {backgroundColor: colors?.card};
+  const bg: ViewStyle = {backgroundColor: colors?.card};
 
   if (useSafeAreaView) {
     return (
